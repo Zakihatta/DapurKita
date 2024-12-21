@@ -1,5 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const MongoStore = require('connect-mongo');
 const dotenv = require('dotenv');
 const session = require('express-session');
 const expressLayouts = require('express-ejs-layouts');
@@ -45,11 +46,16 @@ app.locals.formatTime = (date) => {
 
 // Session Setup
 app.use(session({
-    secret: process.env.SESSION_SECRET || 'rahasia',
+    secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
+    store: MongoStore.create({
+        mongoUrl: process.env.MONGODB_URI,
+        ttl: 24 * 60 * 60 // 1 day
+    }),
     cookie: {
         secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
         maxAge: 24 * 60 * 60 * 1000 // 1 day
     }
 }));
@@ -230,9 +236,17 @@ app.use((err, req, res, next) => {
 });
 
 // Database Connection
-mongoose.connect('mongodb://127.0.0.1:27017/dapurkita')
-    .then(() => console.log('Terhubung ke MongoDB'))
-    .catch((err) => console.error('Kesalahan koneksi MongoDB:', err));
+mongoose.connect(process.env.MONGODB_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+})
+.then(() => {
+    console.log('Terhubung ke MongoDB');
+})
+.catch(err => {
+    console.error('Error koneksi MongoDB:', err);
+    process.exit(1);
+});
 
 // Server Start
 const PORT = process.env.PORT || 3000;
