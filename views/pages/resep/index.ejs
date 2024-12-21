@@ -1,0 +1,107 @@
+<div class="recipes-list">
+    <div class="recipes-header">
+        <div class="header-content">
+            <h1>Jelajahi Resep</h1>
+            <p>Temukan berbagai resep lezat dari komunitas DapurKita</p>
+        </div>
+        
+        <div class="header-actions">
+            <% if (user) { %>
+                <a href="/resep/buat" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> Buat Resep
+                </a>
+            <% } %>
+        </div>
+    </div>
+
+    <div class="search-section">
+        <div class="search-bar">
+            <input type="text" id="searchInput" class="form-control" placeholder="Cari resep...">
+        </div>
+    </div>
+
+    <div class="recipes-grid">
+        <% if (resep && resep.length > 0) { %>
+            <% resep.forEach(item => { %>
+                <div class="recipe-card">
+                    <div class="recipe-image">
+                        <img src="<%= item.fotoUtama %>" alt="<%= item.judul %>">
+                        <div class="recipe-overlay">
+                            <span class="recipe-time">
+                                <i class="fas fa-clock"></i> <%= item.waktuMemasak %> menit
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div class="recipe-content">
+                        <h3 class="recipe-title"><%= item.judul %></h3>
+                        <p class="recipe-description">
+                            <%= item.deskripsi.substring(0, 100) %>...
+                        </p>
+                        
+                        <div class="recipe-meta">
+                            <div class="recipe-author">
+                                <i class="fas fa-user"></i>
+                                <span>oleh <%= item.pembuat.nama %></span>
+                            </div>
+                            <span class="recipe-portion">
+                                <i class="fas fa-users"></i> <%= item.porsi %> porsi
+                            </span>
+                        </div>
+
+                        <div class="recipe-actions">
+                            <a href="/resep/<%= item._id %>" class="btn btn-primary">Lihat Resep</a>
+                            <% if (user && user.id === item.pembuat._id.toString()) { %>
+                                <div class="recipe-owner-actions">
+                                    <a href="/resep/edit/<%= item._id %>" class="btn btn-outline">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <button onclick="confirmDelete('<%= item._id %>')" class="btn btn-outline btn-danger">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            <% } %>
+                        </div>
+                    </div>
+                </div>
+            <% }) %>
+        <% } else { %>
+            <div class="no-recipes">
+                <i class="fas fa-book"></i>
+                <p>Belum ada resep yang ditambahkan</p>
+                <% if (user) { %>
+                    <a href="/resep/buat" class="btn btn-primary">Buat Resep Pertama</a>
+                <% } %>
+            </div>
+        <% } %>
+    </div>
+</div>
+
+<script>
+// Implementasi search
+const searchInput = document.getElementById('searchInput');
+const recipesGrid = document.querySelector('.recipes-grid');
+
+searchInput.addEventListener('input', function(e) {
+    const searchTerm = e.target.value.toLowerCase();
+    const recipeCards = document.querySelectorAll('.recipe-card');
+
+    recipeCards.forEach(card => {
+        const title = card.querySelector('.recipe-title').textContent.toLowerCase();
+        const description = card.querySelector('.recipe-description').textContent.toLowerCase();
+        
+        if (title.includes(searchTerm) || description.includes(searchTerm)) {
+            card.style.display = 'block';
+        } else {
+            card.style.display = 'none';
+        }
+    });
+});
+
+// Function untuk konfirmasi delete
+function confirmDelete(resepId) {
+    if (confirm('Apakah Anda yakin ingin menghapus resep ini?')) {
+        window.location.href = `/resep/hapus/${resepId}`;
+    }
+}
+</script>

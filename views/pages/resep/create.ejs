@@ -1,0 +1,125 @@
+<div class="create-recipe">
+    <div class="create-recipe-header">
+        <h1>Buat Resep Baru</h1>
+        <p>Bagikan resep terbaik Anda dengan komunitas DapurKita</p>
+    </div>
+
+    <form class="create-recipe-form" action="/resep/buat" method="POST" enctype="multipart/form-data">
+        <!-- Informasi Dasar -->
+        <div class="form-section">
+            <h2 class="section-title">Informasi Dasar</h2>
+            
+            <div class="form-group">
+                <label class="form-label">Nama Resep</label>
+                <input type="text" name="judul" class="form-control" placeholder="Mis: Nasi Goreng Spesial" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Deskripsi Singkat</label>
+                <textarea name="deskripsi" class="form-control" rows="3" placeholder="Ceritakan tentang resep ini..." required></textarea>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Waktu Memasak (menit)</label>
+                    <input type="number" name="waktuMemasak" class="form-control" min="1" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Porsi</label>
+                    <input type="number" name="porsi" class="form-control" min="1" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Foto Masakan</label>
+                <div class="image-upload">
+                    <div class="image-preview" id="imagePreview">
+                        <img src="/images/placeholder-image.png" alt="Preview" id="previewImg">
+                    </div>
+                    <div class="upload-controls">
+                        <input type="file" name="foto" id="fotoInput" class="form-control" accept="image/*" required>
+                        <small class="form-text text-muted">Upload gambar dengan format JPG, JPEG, atau PNG</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bahan-bahan -->
+        <div class="form-section">
+            <h2 class="section-title">Bahan-bahan</h2>
+            <div id="bahanContainer"></div>
+            <button type="button" class="btn btn-outline" onclick="tambahBahan()">
+                <i class="fas fa-plus"></i> Tambah Bahan
+            </button>
+        </div>
+
+        <!-- Langkah-langkah -->
+        <div class="form-section">
+            <h2 class="section-title">Langkah-langkah</h2>
+            <div id="langkahContainer"></div>
+            <button type="button" class="btn btn-outline" onclick="tambahLangkah()">
+                <i class="fas fa-plus"></i> Tambah Langkah
+            </button>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Simpan Resep</button>
+            <a href="/dashboard" class="btn btn-outline">Batal</a>
+        </div>
+    </form>
+</div>
+
+<script>
+    let bahanCount = 0;
+    let langkahCount = 0;
+    
+    // Tambah bahan pertama saat halaman dimuat
+    document.addEventListener('DOMContentLoaded', function() {
+        tambahBahan();
+        tambahLangkah();
+    });
+    
+    function tambahBahan() {
+        const container = document.getElementById('bahanContainer');
+        const div = document.createElement('div');
+        div.className = 'bahan-item';
+        div.innerHTML = `
+            <input type="text" name="bahan[${bahanCount}][nama]" placeholder="Nama Bahan" class="form-control" required>
+            <input type="number" name="bahan[${bahanCount}][jumlah]" placeholder="Jumlah" class="form-control" required min="1">
+            <input type="text" name="bahan[${bahanCount}][satuan]" placeholder="Satuan" class="form-control" required>
+            ${bahanCount > 0 ? `<button type="button" class="btn-remove" onclick="this.parentElement.remove()">×</button>` : ''}
+        `;
+        container.appendChild(div);
+        bahanCount++;
+    }
+    
+    function tambahLangkah() {
+        const container = document.getElementById('langkahContainer');
+        const div = document.createElement('div');
+        div.className = 'langkah-item';
+        div.innerHTML = `
+            <textarea name="langkah[]" class="form-control" placeholder="Langkah ${langkahCount + 1}" required></textarea>
+            ${langkahCount > 0 ? `<button type="button" class="btn-remove" onclick="this.parentElement.remove()">×</button>` : ''}
+        `;
+        container.appendChild(div);
+        langkahCount++;
+    }
+    
+    // Preview gambar
+    const fotoInput = document.getElementById('fotoInput');
+    const previewImg = document.getElementById('previewImg');
+    const imagePreview = document.getElementById('imagePreview');
+    
+    fotoInput.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                previewImg.src = e.target.result;
+                previewImg.style.display = 'block';
+                imagePreview.style.backgroundColor = 'transparent';
+            }
+            reader.readAsDataURL(file);
+        }
+    });
+    </script>

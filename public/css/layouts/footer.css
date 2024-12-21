@@ -1,0 +1,29 @@
+.footer {
+    background-color: var(--white);
+    padding: var(--spacing-md) 0;
+    border-top: 1px solid var(--gray-200);
+    margin-top: auto; /* Pastikan footer di bawah */
+}
+
+.footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 var(--spacing-lg);
+    text-align: center; /* Pusatkan konten */
+}
+
+.footer-text {
+    color: var(--text-light);
+    font-size: 0.875rem;
+    margin-bottom: var(--spacing-xs);
+}
+
+.creator-info {
+    font-size: 0.875rem;
+    color: var(--text-light);
+}
+
+.creator-info span {
+    color: var(--primary);
+    font-weight: 500;
+}

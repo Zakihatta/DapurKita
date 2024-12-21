@@ -1,0 +1,95 @@
+<%- contentFor('body') %>
+
+<div class="chat-wrapper">
+    <!-- Sidebar -->
+    <div class="chat-sidebar">
+        <div class="sidebar-header">
+            <h2>Ruang Chat</h2>
+        </div>
+        <div class="chat-rooms-list">
+            <a href="/chat/rooms" class="room-item <%= !roomId ? 'active' : '' %>">
+                <i class="fas fa-home"></i>
+                Daftar Ruang Chat
+            </a>
+            <% if (roomId) { %>
+                <div class="room-item active">
+                    <i class="fas fa-comments"></i>
+                    <%= roomId %>
+                </div>
+            <% } %>
+        </div>
+    </div>
+
+    <!-- Main Chat Area -->
+    <div class="chat-container" 
+        data-room-id="<%= roomId %>"
+        data-user-id="<%= user ? user.id : '' %>"
+        data-user-nama="<%= user ? user.nama : '' %>">
+        
+        <div class="chat-header">
+            <div class="header-info">
+                <h2>
+                    <i class="fas fa-comments"></i> 
+                    Chat Komunitas
+                </h2>
+                <span id="status-indicator" class="status-text">
+                    <i class="fas fa-circle text-success"></i> 
+                    <span id="connection-status">Menghubungkan...</span>
+                </span>
+            </div>
+        </div>
+
+        <div class="chat-messages" id="chat-messages">
+            <% if (messages && messages.length > 0) { %>
+                <% messages.forEach(function(msg) { %>
+                    <div class="message <%= msg.pengirim._id.toString() === user.id ? 'own-message' : '' %>">
+                        <div class="message-content">
+                            <%= msg.pesan %>
+                        </div>
+                        <div class="message-meta">
+                            <span class="message-sender"><%= msg.pengirim.nama %></span>
+                            <span class="message-time">
+                                <%= new Date(msg.createdAt).toLocaleTimeString('id-ID', { 
+                                    hour: '2-digit', 
+                                    minute: '2-digit' 
+                                }) %>
+                            </span>
+                        </div>
+                    </div>
+                <% }); %>
+            <% } %>
+        </div>
+
+        <% if (!messages || messages.length === 0) { %>
+            <div class="no-messages" id="noMessages">
+                <div class="no-messages-content">
+                    <i class="fas fa-comments"></i>
+                    <p>Belum ada pesan di ruang chat ini</p>
+                    <p class="sub-text">Mulai percakapan dengan mengirim pesan pertama!</p>
+                </div>
+            </div>
+        <% } %>
+
+        <!-- Typing Indicator -->
+        <div id="typing-indicator" class="typing-indicator"></div>
+
+        <!-- Chat Input -->
+        <div class="chat-input">
+            <form id="chat-form" class="chat-form">
+                <div class="input-group">
+                    <input 
+                        type="text" 
+                        id="message-input" 
+                        placeholder="Ketik pesan..." 
+                        autocomplete="off"
+                        required
+                    >
+                </div>
+                <button type="submit" class="btn btn-send">
+                    <i class="fas fa-paper-plane"></i>
+                    <span>Kirim</span>
+                </button>
+            </form>
+        </div>
+    </div>
+</div>

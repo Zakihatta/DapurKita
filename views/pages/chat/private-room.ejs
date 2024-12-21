@@ -1,0 +1,52 @@
+<%- contentFor('body') %>
+
+<div class="chat-wrapper">
+    <div class="chat-header">
+        <div class="user-info">
+            <a href="/chat/private" class="back-btn">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+            <div class="user-avatar">
+                <i class="fas fa-user"></i>
+            </div>
+            <h2><%= otherUser.nama %></h2>
+        </div>
+    </div>
+
+    <div class="chat-messages" id="chatMessages"
+        data-other-id="<%= otherUser._id %>"
+        data-user-id="<%= user.id %>">
+        <% messages.forEach(function(msg) { %>
+            <div class="message <%= msg.pengirim.toString() === user.id ? 'own-message' : '' %>">
+                <div class="message-content">
+                    <%= msg.pesan %>
+                </div>
+                <div class="message-meta">
+                    <span class="message-time">
+                        <%= new Date(msg.createdAt).toLocaleTimeString('id-ID', { 
+                            hour: '2-digit', 
+                            minute: '2-digit' 
+                        }) %>
+                    </span>
+                    <% if (msg.pengirim.toString() === user.id) { %>
+                        <i class="fas fa-check <%= msg.dibaca ? 'read' : '' %>"></i>
+                    <% } %>
+                </div>
+            </div>
+        <% }); %>
+    </div>
+
+    <div class="chat-input">
+        <form id="chatForm" class="chat-form">
+            <div class="input-group">
+                <input type="text" id="messageInput" placeholder="Ketik pesan..." required>
+                <button type="button" class="btn-emoji">
+                    <i class="far fa-smile"></i>
+                </button>
+            </div>
+            <button type="submit" class="btn-send">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </form>
+    </div>
+</div>

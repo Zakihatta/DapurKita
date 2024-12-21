@@ -1,0 +1,33 @@
+<nav class="navbar">
+    <div class="nav-container">
+        <!-- Logo -->
+        <a href="/dashboard" class="logo">
+            <i class="fas fa-utensils"></i> DapurKita
+        </a>
+
+        <!-- Navigation Links -->
+        <div class="nav-links">
+            <% if (locals.user) { %>
+                <a href="/dashboard" class="nav-link">Dashboard</a>
+
+                <!-- Dropdown Menu -->
+                <div class="nav-dropdown">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-comments"></i> Chat
+                        <i class="fas fa-chevron-down dropdown-icon"></i>
+                    </a>
+                    <div class="dropdown-content">
+                        <a href="/chat/rooms">Chat Komunitas</a>
+                        <a href="/chat/private">Chat Pribadi</a>
+                    </div>
+                </div>
+
+                <a href="/resep/buat" class="btn btn-primary">Buat Resep</a>
+                <a href="/auth/logout" class="nav-link">Keluar</a>
+            <% } else { %>
+                <a href="/login" class="nav-link">Masuk</a>
+                <a href="/daftar" class="btn btn-primary">Daftar</a>
+            <% } %>
+        </div>
+    </div>
+</nav>

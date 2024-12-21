@@ -1,0 +1,51 @@
+.create-recipe {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: var(--spacing-lg);
+}
+
+.image-preview {
+    width: 100%; /* Ubah ukuran container */
+    height: 300px; /* Tinggi tetap */
+    border: 2px dashed var(--gray-200);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    margin-bottom: var(--spacing-sm);
+    position: relative;
+    background: var(--gray-50);
+}
+
+.image-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Pastikan gambar menutupi area dengan proporsi tetap */
+    object-position: center;
+}
+
+/* Container untuk form sections */
+.form-section {
+    background: var(--white);
+    padding: var(--spacing-xl);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    margin-bottom: var(--spacing-lg);
+}
+
+.create-recipe-form {
+    margin-top: var(--spacing-xl);
+}
+
+/* Responsive styling */
+@media (max-width: 768px) {
+    .create-recipe {
+        padding: var(--spacing-md);
+    }
+
+    .form-section {
+        padding: var(--spacing-lg);
+    }
+
+    .image-preview {
+        height: 200px;
+    }
+}

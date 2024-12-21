@@ -1,0 +1,31 @@
+.recipe-rating {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin: 1rem 0;
+}
+
+.rating-stars {
+    display: flex;
+    gap: 0.25rem;
+}
+
+.star-icon {
+    color: #ddd;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.star-icon.active,
+.star-icon:hover {
+    color: #ffd700;
+}
+
+.rating-info {
+    color: var(--text-light);
+    font-size: 0.9rem;
+}
+
+.average-rating {
+    font-weight: bold;
+}

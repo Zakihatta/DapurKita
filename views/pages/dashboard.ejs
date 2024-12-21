@@ -1,0 +1,94 @@
+<div class="dashboard">
+    <div class="welcome-section">
+        <div class="welcome-text">
+            <h1>Selamat datang, <%= user.nama %>! 👋</h1>
+            <p>Mari mulai berbagi resep masakan terbaik Anda</p>
+        </div>
+        <div class="welcome-actions">
+            <a href="/resep/buat" class="btn btn-primary">+ Buat Resep Baru</a>
+        </div>
+    </div>
+
+    
+
+    <div class="stats-grid">
+        
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-comments"></i>
+            </div>
+            <div class="stat-info">
+                <span>Chat</span>
+                <div class="stat-actions">
+                    <a href="/chat/rooms" class="btn btn-sm">Komunitas</a>
+                    <a href="/chat/private" class="btn btn-sm">Pribadi</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-book"></i>
+            </div>
+            <div class="stat-info">
+                <span>Resep Saya</span>
+                <h3><%= resepCount || 0 %></h3>
+            </div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-heart"></i>
+            </div>
+            <div class="stat-info">
+                <span>Favorit</span>
+                <h3><%= favoritCount || 0 %></h3>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-comments"></i>
+            </div>
+            <div class="stat-info">
+                <span>Komentar</span>
+                <h3><%= commentCount || 0 %></h3>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="recent-recipes">
+        <div class="section-header">
+            <h2>Resep Terbaru Saya</h2>
+            <a href="/resep" class="btn btn-outline">Lihat Semua</a>
+        </div>
+
+        <div class="recipe-grid">
+            <% if (recipes && recipes.length > 0) { %>
+                <% recipes.forEach(recipe => { %>
+                    <div class="recipe-card">
+                        <div class="recipe-image">
+                            <img src="<%= recipe.fotoUtama %>" alt="<%= recipe.judul %>">
+                        </div>
+                        <div class="recipe-content">
+                            <h3><%= recipe.judul %></h3>
+                            <p><%= recipe.deskripsi.substring(0, 100) %>...</p>
+                            <div class="recipe-meta">
+                                <span><i class="fas fa-clock"></i> <%= recipe.waktuMemasak %> menit</span>
+                                <span><i class="fas fa-user"></i> <%= recipe.porsi %> porsi</span>
+                            </div>
+                            <a href="/resep/<%= recipe._id %>" class="btn btn-primary">Lihat Resep</a>
+                        </div>
+                    </div>
+                <% }) %>
+            <% } else { %>
+                <div class="no-recipes">
+                    <i class="fas fa-book"></i>
+                    <p>Belum ada resep yang dibuat</p>
+                    <a href="/resep/buat" class="btn btn-primary">Buat Resep Pertama</a>
+                </div>
+            <% } %>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,23 @@
+<%- contentFor('body') %>
+
+<div class="chat-rooms-container">
+    <div class="chat-rooms-header">
+        <h1>Ruang Chat DapurKita</h1>
+        <p>Pilih ruang chat untuk mulai berdiskusi</p>
+    </div>
+
+    <div class="rooms-grid">
+        <% rooms.forEach(function(room) { %>
+            <div class="room-card">
+                <div class="room-icon">
+                    <i class="fas fa-<%= room.tipe === 'resep' ? 'utensils' : (room.tipe === 'diskusi' ? 'comments' : 'users') %>"></i>
+                </div>
+                <div class="room-info">
+                    <h3><%= room.nama %></h3>
+                    <p><%= room.deskripsi %></p>
+                </div>
+                <a href="/chat/room/<%= room._id %>" class="btn btn-primary">Masuk Chat</a>
+            </div>
+        <% }); %>
+    </div>
+</div>

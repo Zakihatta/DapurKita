@@ -1,0 +1,22 @@
+.error-page {
+    min-height: calc(100vh - 140px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-lg);
+}
+
+.error-container {
+    text-align: center;
+    background: var(--white);
+    padding: var(--spacing-xl);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    max-width: 500px;
+    width: 100%;
+}
+
+.error-container h1 {
+    color: var(--error);
+    margin-bottom: var(--spacing-md);
+}

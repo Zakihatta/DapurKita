@@ -1,0 +1,61 @@
+<%- contentFor('body') %>
+
+<div class="chat-list-container">
+    <div class="chat-header">
+        <h2>Chat Pribadi</h2>
+        <button id="newChatBtn" class="chat-baru-btn">
+            <i class="fas fa-plus"></i> Chat Baru
+        </button>
+    </div>
+
+    <% if (chats && chats.length > 0) { %>
+        <div class="chat-list">
+            <% chats.forEach(function(chat) { %>
+                <a href="/chat/private/<%= chat._id._id %>" class="chat-item">
+                    <div class="chat-avatar">
+                        <i class="fas fa-user"></i>
+                        <span class="status-indicator" data-user-id="<%= chat._id._id %>"></span>
+                    </div>
+                    <div class="chat-content">
+                        <div class="chat-header-meta">
+                            <h3 class="chat-name"><%= chat._id.nama %></h3>
+                            <span class="last-time">
+                                <% if (chat.lastMessage) { %>
+                                    <%= formatTime(chat.lastMessage.createdAt) %>
+                                <% } %>
+                            </span>
+                        </div>
+                        <% if (chat.lastMessage) { %>
+                            <p class="chat-preview">
+                                <%= chat.lastMessage.pesan.substring(0, 30) %>
+                                <%= chat.lastMessage.pesan.length > 30 ? '...' : '' %>
+                            </p>
+                        <% } %>
+                    </div>
+                </a>
+            <% }); %>
+        </div>
+    <% } else { %>
+        <div class="empty-state">
+            <i class="fas fa-comments"></i>
+            <h3>Belum ada chat</h3>
+            <p>Mulai chat dengan teman baru</p>
+        </div>
+    <% } %>
+</div>
+
+<!-- Modal Chat Baru -->
+<div class="modal" id="newChatModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Chat Baru</h3>
+            <button class="close-btn">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="search-box">
+                <input type="text" id="userSearch" placeholder="Cari pengguna...">
+            </div>
+            <div id="searchResults" class="search-results"></div>
+        </div>
+    </div>
+</div>

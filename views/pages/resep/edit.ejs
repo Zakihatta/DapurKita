@@ -1,0 +1,136 @@
+<div class="create-recipe">
+    <div class="create-recipe-header">
+        <h1>Edit Resep</h1>
+        <p>Perbaharui resep Anda</p>
+    </div>
+
+    <form class="create-recipe-form" action="/resep/edit/<%= resep._id %>" method="POST" enctype="multipart/form-data">
+        <!-- Informasi Dasar -->
+        <div class="form-section">
+            <h2 class="section-title">Informasi Dasar</h2>
+            
+            <div class="form-group">
+                <label class="form-label">Nama Resep</label>
+                <input type="text" name="judul" class="form-control" value="<%= resep.judul %>" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Deskripsi Resep</label>
+                <textarea name="deskripsi" class="form-control" rows="3" required><%= resep.deskripsi %></textarea>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Waktu Memasak (menit)</label>
+                    <input type="number" name="waktuMemasak" class="form-control" value="<%= resep.waktuMemasak %>" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Porsi</label>
+                    <input type="number" name="porsi" class="form-control" value="<%= resep.porsi %>" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Foto Masakan</label>
+                <div class="image-upload">
+                    <div class="image-preview" id="imagePreview">
+                        <img src="<%= resep.fotoUtama %>" alt="Preview" id="previewImg">
+                    </div>
+                    <div class="upload-controls">
+                        <input type="file" name="foto" id="fotoInput" class="form-control" accept="image/*">
+                        <small>Biarkan kosong jika tidak ingin mengubah foto</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bahan-bahan -->
+        <div class="form-section">
+            <h2 class="section-title">Bahan-bahan</h2>
+            <div id="bahanContainer">
+                <% resep.bahan.forEach((bahan, index) => { %>
+                    <div class="bahan-item">
+                        <input type="text" name="bahan[<%= index %>][nama]" value="<%= bahan.nama %>" placeholder="Nama Bahan" class="form-control" required>
+                        <input type="number" name="bahan[<%= index %>][jumlah]" value="<%= bahan.jumlah %>" placeholder="Jumlah" class="form-control" required>
+                        <input type="text" name="bahan[<%= index %>][satuan]" value="<%= bahan.satuan %>" placeholder="Satuan" class="form-control" required>
+                        <% if (index > 0) { %>
+                            <button type="button" class="btn-remove" onclick="this.parentElement.remove()">×</button>
+                        <% } %>
+                    </div>
+                <% }); %>
+            </div>
+            <button type="button" class="btn btn-outline" onclick="tambahBahan()">+ Tambah Bahan</button>
+        </div>
+
+        <!-- Langkah-langkah -->
+        <div class="form-section">
+            <h2 class="section-title">Langkah-langkah</h2>
+            <div id="langkahContainer">
+                <% resep.langkah.forEach((step, index) => { %>
+                    <div class="langkah-item">
+                        <textarea name="langkah[<%= index %>]" class="form-control" placeholder="Langkah <%= index + 1 %>" required><%= step.deskripsi %></textarea>
+                        <% if (index > 0) { %>
+                            <button type="button" class="btn-remove" onclick="this.parentElement.remove()">×</button>
+                        <% } %>
+                    </div>
+                <% }); %>
+            </div>
+            <button type="button" class="btn btn-outline" onclick="tambahLangkah()">+ Tambah Langkah</button>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+            <a href="/resep/<%= resep._id %>" class="btn btn-outline">Batal</a>
+        </div>
+    </form>
+</div>
+
+<script>
+    // Initialize counters from server-side data
+    const initialBahan = JSON.parse('<%- JSON.stringify(resep.bahan) %>');
+    const initialLangkah = JSON.parse('<%- JSON.stringify(resep.langkah) %>');
+    
+    let bahanCount = initialBahan.length;
+    let langkahCount = initialLangkah.length;
+    
+    function tambahBahan() {
+        const container = document.getElementById('bahanContainer');
+        const div = document.createElement('div');
+        div.className = 'bahan-item';
+        div.innerHTML = `
+            <input type="text" name="bahan[${bahanCount}][nama]" placeholder="Nama Bahan" class="form-control" required>
+            <input type="number" name="bahan[${bahanCount}][jumlah]" placeholder="Jumlah" class="form-control" required min="1">
+            <input type="text" name="bahan[${bahanCount}][satuan]" placeholder="Satuan" class="form-control" required>
+            <button type="button" class="btn-remove" onclick="this.parentElement.remove()">×</button>
+        `;
+        container.appendChild(div);
+        bahanCount++;
+    }
+    
+    function tambahLangkah() {
+        const container = document.getElementById('langkahContainer');
+        const div = document.createElement('div');
+        div.className = 'langkah-item';
+        div.innerHTML = `
+            <textarea name="langkah[${langkahCount}]" class="form-control" placeholder="Langkah ${langkahCount + 1}" required></textarea>
+            <button type="button" class="btn-remove" onclick="this.parentElement.remove()">×</button>
+        `;
+        container.appendChild(div);
+        langkahCount++;
+    }
+    
+    // Preview gambar
+    const fotoInput = document.getElementById('fotoInput');
+    const previewImg = document.getElementById('previewImg');
+    
+    fotoInput.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                previewImg.src = e.target.result;
+            }
+            reader.readAsDataURL(file);
+        }
+    });
+    </script>

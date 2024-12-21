@@ -1,0 +1,133 @@
+<div class="recipe-detail">
+    <div class="recipe-hero">
+        <div class="recipe-image">
+            <img src="<%= resep.fotoUtama %>" alt="<%= resep.judul %>">
+        </div>
+        <div class="recipe-info">
+            <h1 class="recipe-title"><%= resep.judul %></h1>
+            
+            <!-- Rating Section -->
+            <div class="recipe-rating" data-resep-id="<%= resep._id %>">
+                <div class="rating-stars">
+                    <% for(let i = 1; i <= 5; i++) { %>
+                        <i class="fas fa-star star-icon"></i>
+                    <% } %>
+                </div>
+                <div class="rating-info">
+                    <span class="average-rating"><%= resep.ratingRataRata || '0.0' %></span>
+                    <span class="rating-count">(<%= resep.jumlahRating || 0 %> rating)</span>
+                </div>
+                <% if (!user) { %>
+                    <small class="login-prompt">
+                        <a href="/login">Login</a> untuk memberikan rating
+                    </small>
+                <% } %>
+            </div>
+
+            <!-- Meta Information -->
+            <div class="recipe-meta">
+                <div class="meta-item">
+                    <i class="fas fa-clock"></i>
+                    <span><%= resep.waktuMemasak %> menit</span>
+                </div>
+                <div class="meta-item">
+                    <i class="fas fa-users"></i>
+                    <span><%= resep.porsi %> porsi</span>
+                </div>
+                <div class="meta-item">
+                    <i class="fas fa-user"></i>
+                    <span>oleh <%= resep.pembuat.nama %></span>
+                </div>
+            </div>
+
+            <div class="recipe-description">
+                <%= resep.deskripsi %>
+            </div>
+        </div>
+    </div>
+
+    <div class="recipe-content">
+        <!-- Ingredients Section -->
+        <div class="recipe-ingredients">
+            <h2 class="section-title">Bahan-bahan</h2>
+            <ul class="ingredients-list">
+                <% resep.bahan.forEach(bahan => { %>
+                    <li>
+                        <span class="ingredient-name"><%= bahan.nama %></span>
+                        <span class="ingredient-amount"><%= bahan.jumlah %> <%= bahan.satuan %></span>
+                    </li>
+                <% }) %>
+            </ul>
+        </div>
+
+        <!-- Steps Section -->
+        <div class="recipe-steps">
+            <h2 class="section-title">Langkah-langkah</h2>
+            <div class="steps-list">
+                <% resep.langkah.forEach((step, index) => { %>
+                    <div class="step-item">
+                        <div class="step-number"><%= index + 1 %></div>
+                        <div class="step-content"><%= step.deskripsi %></div>
+                    </div>
+                <% }) %>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tambahkan tombol favorit -->
+    <% if (user) { %>
+        <button id="favoritBtn" class="btn <%= isFavorit ? 'btn-danger' : 'btn-primary' %>">
+            <i class="fas fa-heart"></i>
+            <span><%= isFavorit ? 'Hapus dari Favorit' : 'Tambah ke Favorit' %></span>
+        </button>
+    <% } %>
+
+    <!-- Comments Section -->
+    <div class="comments-section">
+        <h2 class="section-title">Komentar</h2>
+        
+        <% if (user) { %>
+            <form class="comment-form" action="/resep/<%= resep._id %>/komentar" method="POST">
+                <div class="form-group">
+                    <textarea name="isi" class="form-control" rows="3" placeholder="Tulis komentar Anda..." required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Kirim Komentar</button>
+            </form>
+        <% } else { %>
+            <div class="login-prompt">
+                <p>Silakan <a href="/login">masuk</a> untuk memberikan komentar</p>
+            </div>
+        <% } %>
+
+        <div class="comments-list">
+            <% if (komentar && komentar.length > 0) { %>
+                <% komentar.forEach(item => { %>
+                    <div class="comment-item">
+                        <div class="comment-header">
+                            <div class="comment-author">
+                                <i class="fas fa-user"></i>
+                                <span><%= item.pengguna.nama %></span>
+                            </div>
+                            <div class="comment-time">
+                                <%= new Date(item.tanggal).toLocaleDateString('id-ID', { 
+                                    day: 'numeric', 
+                                    month: 'long', 
+                                    year: 'numeric',
+                                    hour: '2-digit',
+                                    minute: '2-digit'
+                                }) %>
+                            </div>
+                        </div>
+                        <div class="comment-content">
+                            <%= item.isi %>
+                        </div>
+                    </div>
+                <% }) %>
+            <% } else { %>
+                <div class="no-comments">
+                    <p>Belum ada komentar. Jadilah yang pertama berkomentar!</p>
+                </div>
+            <% } %>
+        </div>
+    </div>
+</div>
