@@ -1,48 +1,63 @@
 <%- contentFor('body') %>
 
-<div class="chat-wrapper">
-    <div class="chat-private-header">
-        <a href="/chat/private" class="back-btn">
-            <i class="fas fa-arrow-left"></i>
-        </a>
-        <h2><%= otherUser.nama %></h2>
-    </div>
+<div class="container">
+    <div class="chat-wrapper">
+        <!-- Header Chat -->
+        <div class="chat-private-header">
+            <a href="/chat/private" class="back-btn">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+            <h2><%= otherUser.nama %></h2>
+        </div>
 
-    <div class="chat-messages" id="chatMessages" 
-         data-other-id="<%= otherUser._id %>"
-         data-user-id="<%= user.id %>">
-        <% if (messages && messages.length > 0) { %>
-            <% messages.forEach(function(msg) { %>
-                <div class="message <%= msg.pengirim.toString() === user.id ? 'own-message' : '' %>">
-                    <div class="message-bubble">
-                        <p><%= msg.pesan %></p>
-                        <span class="message-time">
-                            <%= new Date(msg.createdAt).toLocaleTimeString('id-ID', { 
-                                hour: '2-digit', 
-                                minute: '2-digit' 
-                            }) %>
-                        </span>
+        <!-- Area Pesan -->
+        <div class="chat-messages" id="chatMessages" 
+             data-other-id="<%= otherUser._id %>"
+             data-user-id="<%= user.id %>">
+            <% if (messages && messages.length > 0) { %>
+                <% messages.forEach(function(msg) { %>
+                    <div class="message <%= msg.pengirim.toString() === user.id ? 'own-message' : '' %>">
+                        <div class="message-bubble">
+                            <p><%= msg.pesan %></p>
+                            <span class="message-time">
+                                <%= new Date(msg.createdAt).toLocaleTimeString('id-ID', { 
+                                    hour: '2-digit', 
+                                    minute: '2-digit' 
+                                }) %>
+                            </span>
+                        </div>
                     </div>
-                </div>
-            <% }); %>
-        <% } %>
-    </div>
+                <% }); %>
+            <% } %>
+        </div>
 
-    <div class="chat-input-container">
-        <form id="chatForm" class="chat-input-form">
-            <input 
-                type="text" 
-                id="messageInput" 
-                placeholder="Ketik pesan..." 
-                autocomplete="off"
-                required
-            >
-            <button type="button" class="emoji-btn">
-                <i class="far fa-smile"></i>
-            </button>
-            <button type="submit" class="send-btn">
-                <i class="fas fa-paper-plane"></i>
-            </button>
-        </form>
+        <!-- Area Input -->
+        <div class="chat-input-container">
+            <form id="chatForm" class="chat-input-form">
+                <input 
+                    type="text" 
+                    id="messageInput" 
+                    placeholder="Ketik pesan..." 
+                    autocomplete="off"
+                    required
+                >
+                <button type="button" class="emoji-btn">
+                    <i class="far fa-smile"></i>
+                </button>
+                <button type="submit" class="send-btn">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </form>
+        </div>
     </div>
 </div>
+
+<script>
+// Tambahkan script untuk memastikan scroll bekerja
+document.addEventListener('DOMContentLoaded', function() {
+    const chatMessages = document.getElementById('chatMessages');
+    if (chatMessages) {
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+});
+</script>

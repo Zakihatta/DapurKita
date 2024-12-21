@@ -1,12 +1,18 @@
 const jwt = require('jsonwebtoken');
 
 
-const auth = (req, res, next) => {
-    if (req.session && req.session.user) {
+module.exports = (req, res, next) => {
+    try {
+        // Cek session user
+        if (!req.session.user) {
+            return res.redirect('/login');
+        }
+
+        // Jika ada session, lanjutkan
+        req.pengguna = req.session.user;
         next();
-    } else {
+    } catch (error) {
+        console.error('Auth middleware error:', error);
         res.redirect('/login');
     }
 };
-
-module.exports = auth;

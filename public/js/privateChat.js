@@ -17,6 +17,40 @@ if (userId) {
     socket.emit('user-connect', userId);
 }
 
+// Function untuk scroll yang lebih robust
+function scrollToBottom(smooth = false) {
+    if (!chatMessages) {
+        console.log('Chat messages container not found');
+        return;
+    }
+    
+    setTimeout(() => {
+        chatMessages.scrollTo({
+            top: chatMessages.scrollHeight,
+            behavior: smooth ? 'smooth' : 'auto'
+        });
+    }, 100);
+}
+
+// Observer untuk memantau perubahan konten chat
+const observer = new MutationObserver(() => {
+    scrollToBottom(true);
+});
+
+if (chatMessages) {
+    // Mulai observe perubahan di chat messages
+    observer.observe(chatMessages, {
+        childList: true,
+        subtree: true
+    });
+    
+    // Scroll saat halaman dimuat
+    scrollToBottom();
+    
+    // Scroll saat semua konten (termasuk gambar) dimuat
+    window.addEventListener('load', () => scrollToBottom());
+}
+
 // Function untuk format waktu
 const formatTime = (date) => {
     return new Date(date).toLocaleTimeString('id-ID', {
@@ -38,7 +72,7 @@ function appendMessage(message, isOwn = false) {
     `;
     
     chatMessages.appendChild(messageDiv);
-    chatMessages.scrollTop = chatMessages.scrollHeight;
+    scrollToBottom(true);
 }
 
 //Update status pengguna
@@ -57,6 +91,8 @@ if (chatForm) {
     // Join private room
     socket.emit('join-private', { userId, otherId });
 
+
+    // Handle submit pesan
     chatForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         const message = messageInput.value.trim();
@@ -80,6 +116,7 @@ if (chatForm) {
             // Reset input
             messageInput.value = '';
             messageInput.focus();
+            scrollToBottom(true);
         }
     });
 
@@ -87,6 +124,17 @@ if (chatForm) {
     socket.on('private-message', (data) => {
         if (data.pengirim !== userId) {
             appendMessage(data, false);
+            scrollToBottom(true);
+        }
+    });
+}
+
+// Tambahkan event listener untuk keyboard
+if (messageInput) {
+    messageInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            chatForm.dispatchEvent(new Event('submit'));
         }
     });
 }
@@ -147,7 +195,22 @@ function displaySearchResults(users) {
     });
 }
 
-// Auto scroll to bottom on load
+// Inisialisasi scroll saat halaman dimuat
 if (chatMessages) {
-    chatMessages.scrollTop = chatMessages.scrollHeight;
+    requestAnimationFrame(() => {
+        scrollToBottom();
+    });
 }
+
+// Handle resize window untuk memastikan scroll tetap bekerja
+window.addEventListener('resize', () => {
+    scrollToBottom();
+});
+
+// Cleanup observer saat halaman unload
+window.addEventListener('unload', () => {
+    if (observer) {
+        observer.disconnect();
+    }
+});
+
